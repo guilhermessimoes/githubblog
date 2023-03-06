@@ -9,6 +9,7 @@ import 'moment/dist/locale/pt-br'
 
 export function Blog () {
   const [ posts, setPost] = useState()  
+  const [searchValue, setSearchValue] = useState('');
 
   const githubAxios = async() => {
     const apiGetRepo = await getRepo()
@@ -19,13 +20,21 @@ export function Blog () {
     githubAxios()
   }, [])
 
+  const handleSearch = (value) => {
+    setSearchValue(value);
+  };
+
+  const filteredPosts = posts?.data?.items?.filter((post) => {
+    return post.title.toLowerCase().includes(searchValue.toLowerCase()) || post.body.toLowerCase().includes(searchValue.toLowerCase());
+  });
+
   return (
     <div>
       <Header />
       <Profile />
-      <SearchForm posts={posts}/>      
+      <SearchForm totalPosts={posts?.data?.items?.length} onSearch={handleSearch} />         
         <CardContainer>
-        {posts?.data?.items?.map((post) => {
+        {filteredPosts?.map((post) => {
         return(
           <a key={post.id} href={`/posts/${post.number}`} >          
             <CardContent>

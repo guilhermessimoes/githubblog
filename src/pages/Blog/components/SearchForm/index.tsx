@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
 import { SearchContainer, SearchHeaderContainer } from "./styles";
 
-export function SearchForm (posts) {
-  const [publicacoes, setPublicacoes] = useState('')
-  const totalPublicacoes = posts?.posts?.data?.items?.length
+export function SearchForm ({ totalPosts, onSearch }) {
+  const [publicacoes, setPublicacoes] = useState('');
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
-    if (totalPublicacoes >1)return setPublicacoes('Publicações')
-    if (totalPublicacoes <=1)return setPublicacoes('Publicação')
-  }, [totalPublicacoes])
+    if (totalPosts > 1) {
+      setPublicacoes('Publicações');
+    } else {
+      setPublicacoes('Publicação');
+    }
+  }, [totalPosts]);
+
+  const handleInputChange = (event) => {
+    setSearchValue(event.target.value);
+    onSearch(searchValue);
+  };
+
   
   return (
     <SearchContainer>
       <SearchHeaderContainer>
         <h1>Publicações</h1>
-        <span>{`${totalPublicacoes} ${publicacoes}`}</span>
+        <span>{`${totalPosts} ${publicacoes}`}</span>
       </SearchHeaderContainer>
-      <input type="text" placeholder="Buscar conteúdo"/>
+      <input type="text" placeholder="Buscar conteúdo" value={searchValue} onChange={handleInputChange} />  
     </SearchContainer>
   )
 }
